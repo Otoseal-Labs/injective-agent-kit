@@ -1,0 +1,82 @@
+import { StructuredTool } from "@langchain/core/tools";
+import { InjectiveEVMAgentKit } from "../../agent";
+import { Address } from "viem";
+import { z } from "zod";
+import { getTokenAddressByDenom } from "../../utils/tokens";
+
+const InjectiveERC20BalanceInputSchema = z
+  .object({
+    contract_address: z.string().optional(),
+    ticker: z.string().optional(),
+  })
+  .nullable()
+  .transform((v) => v ?? {});
+
+export class InjectiveERC20BalanceTool extends StructuredTool<
+  typeof InjectiveERC20BalanceInputSchema
+> {
+  name = "injective_erc20_balance";
+  description = `Get the balance of ERC20 tokens in a Injective wallet.
+
+  This tool retrieves token balances without requiring a wallet address (uses connected wallet).
+
+  If neither parameter is provided, returns the native INJ token balance.
+
+  Parameters:
+  - contract_address: Optional. The contract address of the token.
+  - ticker: Optional. The token symbol/ticker (e.g., "USDC").
+
+  One of these parameters can be used to specify a non-INJ token.`;
+  schema = InjectiveERC20BalanceInputSchema;
+
+  constructor(private readonly injectiveKit: InjectiveEVMAgentKit) {
+    super();
+  }
+
+  protected async _call(
+    input: z.infer<typeof InjectiveERC20BalanceInputSchema>
+  ): Promise<string> {
+    try {
+      var balance;
+      if (input) {
+        let contract_address;
+        if (input.ticker) {
+          if (input.ticker.toUpperCase() === "INJ") {
+            contract_address = undefined;
+          } else {
+            contract_address = getTokenAddressByDenom(input.ticker);
+            if (!contract_address) {
+              throw new Error(
+                `Token with ticker ${input.ticker} not found in token list`
+              );
+            }
+          }
+        } else if (input.contract_address) {
+          contract_address = input.contract_address;
+        }
+        balance = await this.injectiveKit.getERC20Balance(
+          contract_address as Address
+        );
+      } else {
+        balance = await this.injectiveKit.getERC20Balance();
+      }
+
+      return JSON.stringify({
+        status: "success",
+        balance,
+        token: {
+          ticker: input?.ticker?.toUpperCase() || "INJ",
+        },
+      });
+    } catch (error: any) {
+      return JSON.stringify({
+        status: "error",
+        message: error.message,
+        code: error.code || "UNKNOWN_ERROR",
+        token: {
+          ticker: input?.ticker?.toUpperCase() || "INJ",
+        },
+      });
+    }
+  }
+}
