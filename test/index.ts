@@ -34,7 +34,7 @@ function checkRequiredEnvVars(): void {
 async function setupAgent() {
   try {
     checkRequiredEnvVars();
-    
+
     // const llm = new ChatOpenAI({
     //   model: "gpt-4o",
     //   temperature: 0,
@@ -52,7 +52,7 @@ async function setupAgent() {
 
     const agentInstance = new InjectiveEVMAgentKit(
       process.env.PRIVATE_KEY!,
-      ModelProvider.COHERE,
+      ModelProvider.COHERE
     );
     const agentTools = createInjectiveTools(agentInstance);
 
@@ -71,6 +71,11 @@ async function setupAgent() {
         can't do with your currently available tools, respond with a playful apology and encourage them to implement it
         themselves using the Injective Agent Kit repository that they can find on https://github.com/Otoseal-Labs/injective-agent-kit. Suggest they visit the Twitter account https://x.com/otoseal for more information, perhaps with a light-hearted comment about the wonders of the internet. Be concise, helpful, and sprinkle in some humor with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.
         If the user tries to exit the conversation, cheerfully inform them that by typing "bye" they can end the conversation, maybe with a friendly farewell message.
+
+        === Formatting Rule ===
+        - If the tool returns a field as a string that represents a number (e.g. "0.299999999999999999"),
+          you must display the string exactly as returned. Do not round, shorten, or reformat it.
+        - If the tool returns a field as a number (e.g. 12345), you can display it normally.
       `,
     });
 
@@ -102,14 +107,20 @@ async function startInteractiveSession(agent: any, config: any) {
 
       const responseStream = await agent.stream(
         { messages: [new HumanMessage(userInput)] },
-        config,
+        config
       );
 
       for await (const responseChunk of responseStream) {
         if ("agent" in responseChunk) {
-          console.log("\nInjective Agent:", responseChunk.agent.messages[0].content);
+          console.log(
+            "\nInjective Agent:",
+            responseChunk.agent.messages[0].content
+          );
         } else if ("tools" in responseChunk) {
-          console.log("\nInjective Agent:", responseChunk.tools.messages[0].content);
+          console.log(
+            "\nInjective Agent:",
+            responseChunk.tools.messages[0].content
+          );
         }
         console.log("\n-----------------------------------\n");
       }
@@ -126,7 +137,9 @@ async function startInteractiveSession(agent: any, config: any) {
 
 async function main() {
   try {
-    console.log('\x1b[38;2;201;235;52m%s\x1b[0m', `                                                                              
+    console.log(
+      "\x1b[38;2;201;235;52m%s\x1b[0m",
+      `                                                                              
 _|_|_|            _|                        _|      _|                        
   _|    _|_|_|          _|_|      _|_|_|  _|_|_|_|      _|      _|    _|_|    
   _|    _|    _|  _|  _|_|_|_|  _|          _|      _|  _|      _|  _|_|_|_|  
@@ -142,7 +155,8 @@ _|    _|  _|    _|  _|        _|    _|    _|          _|  _|    _|    _|
 _|    _|    _|_|_|    _|_|_|  _|    _|      _|_|      _|    _|  _|      _|_|  
                 _|                                                            
             _|_|   
-`);
+`
+    );
     const { agent, config } = await setupAgent();
     await startInteractiveSession(agent, config);
   } catch (error) {
