@@ -1,12 +1,18 @@
 export * from './erc20';
 export * from './winj9';
+export * from './staking';
 
 import type { InjectiveEVMAgentKit } from "../agent";
 import {
   InjectiveERC20BalanceTool,
   InjectiveERC20TransferTool,
   WrapINJTool, 
-  UnwrapWINJTool
+  UnwrapWINJTool,
+  DelegateINJTool,
+  RedelegateINJTool,
+  UndelegateINJTool,
+  WithdrawDelegatorRewardsTool,
+  GetDelegationINJTool,
 } from './index';
 
 export function createInjectiveTools(
@@ -17,5 +23,10 @@ export function createInjectiveTools(
     new InjectiveERC20TransferTool(injectiveKit),
     new WrapINJTool(injectiveKit),
     new UnwrapWINJTool(injectiveKit),
+    new DelegateINJTool(injectiveKit),
+    new RedelegateINJTool(injectiveKit),
+    new UndelegateINJTool(injectiveKit),
+    new WithdrawDelegatorRewardsTool(injectiveKit),
+    new GetDelegationINJTool(injectiveKit),
   ];
 }

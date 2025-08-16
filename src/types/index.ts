@@ -1,3 +1,5 @@
+export type InjectiveValidatorAddress = `injvaloper1${string}`;
+
 export interface IToken {
   id: string,
   attributes: {
@@ -7,6 +9,24 @@ export interface IToken {
     decimals: number,
   },
 };
+
+export interface ICosmosCoin {
+  amount: bigint;
+  denom: string;
+}
+
+export interface IDelegationInfo {
+  shares: bigint;
+  balance: ICosmosCoin;
+}
+
+export interface IDelegationInfoJSON {
+  shares: string;
+  balance: {
+    amount: string;
+    denom: string;
+  };
+}
 
 export enum ModelProvider {
   ANTHROPIC = "anthropic",

@@ -12,7 +12,9 @@ import { privateKeyToAccount } from "viem/accounts";
 import { getApiKeyForProvider } from "./provider";
 import { getERC20Balance, ERC20Transfer } from "../tools/erc20";
 import { wrapINJ, unwrapWINJ } from "../tools/winj9";
+import { delegateINJ, redelegateINJ, undelegateINJ, withdrawDelegatorRewards, getDelegation } from "../tools/staking";
 import { getTokenAddressByDenom } from "../utils/tokens";
+import { IDelegationInfoJSON, InjectiveValidatorAddress } from "../types";
 
 export class InjectiveEVMAgentKit {
   public publicClient: ViemPublicClient;
@@ -90,5 +92,55 @@ export class InjectiveEVMAgentKit {
    */
   async unwrapWINJ(amount: string): Promise<string> {
     return unwrapWINJ(this, amount);
+  }
+
+  /**
+   * Delegates INJ tokens to a validator
+   * @param validatorAddress The Bech32-encoded address of the validator to delegate to
+   * @param amount The amount of INJ tokens to delegate
+   * @returns Promise with the transaction result
+   */
+  async delegate(validatorAddress: InjectiveValidatorAddress, amount: string): Promise<string> {
+    return delegateINJ(this, validatorAddress, amount);
+  }
+
+  /**
+   * Redelegates INJ tokens from one validator to another
+   * @param validatorSrcAddress The Bech32-encoded address of the source validator
+   * @param validatorDstAddress The Bech32-encoded address of the destination validator
+   * @param amount The amount of INJ tokens to redelegate
+   * @returns Promise with the transaction result
+   */
+  async redelegate(validatorSrcAddress: InjectiveValidatorAddress, validatorDstAddress: InjectiveValidatorAddress, amount: string): Promise<string> {
+    return redelegateINJ(this, validatorSrcAddress, validatorDstAddress, amount);
+  }
+
+  /**
+   * Undelegates INJ tokens from a validator
+   * @param validatorAddress The Bech32-encoded address of the validator to undelegate from
+   * @param amount The amount of INJ tokens to undelegate
+   * @returns Promise with the transaction result
+   */
+  async undelegate(validatorAddress: InjectiveValidatorAddress, amount: string): Promise<string> {
+    return undelegateINJ(this, validatorAddress, amount);
+  }
+
+  /**
+   * Withdraws delegator rewards
+   * @param validatorAddress The Bech32-encoded address of the validator to withdraw rewards from
+   * @returns Promise with the transaction result
+   */
+  async withdrawDelegatorRewards(validatorAddress: InjectiveValidatorAddress): Promise<string> {
+    return withdrawDelegatorRewards(this, validatorAddress);
+  }
+
+  /**
+   * Get delegation information of a delegator on a specific validator
+   * @param validatorAddress The Bech32-encoded address of the validator
+   * @param delegatorAddress Optional. The address of the delegator. (If not provided, defaults to the caller's address)
+   * @returns  Promise with delegation information with formatted delegated amount
+   */
+  async getDelegation(validatorAddress: InjectiveValidatorAddress, delegatorAddress?: Address): Promise<IDelegationInfoJSON> {
+    return getDelegation(this, validatorAddress, delegatorAddress);
   }
 }
