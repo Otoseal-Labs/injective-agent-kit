@@ -11,6 +11,7 @@ import { injectiveTestnet } from "../utils/viem/injective";
 import { privateKeyToAccount } from "viem/accounts";
 import { getApiKeyForProvider } from "./provider";
 import { getERC20Balance, ERC20Transfer } from "../tools/erc20";
+import { wrapINJ, unwrapWINJ } from "../tools/winj9";
 import { getTokenAddressByDenom } from "../utils/tokens";
 
 export class InjectiveEVMAgentKit {
@@ -71,5 +72,23 @@ export class InjectiveEVMAgentKit {
    */
   getTokenAddressFromTicker(ticker: string): Address | null {
     return getTokenAddressByDenom(ticker) as Address | null;
+  }
+
+  /**
+   * Wraps INJ tokens to WINJ
+   * @param amount The amount of INJ tokens to wrap
+   * @returns Promise with transaction result
+   */
+  async wrapINJ(amount: string): Promise<string> {
+    return wrapINJ(this, amount);
+  }
+
+  /**
+   * Unwraps WINJ tokens to INJ
+   * @param amount The amount of WINJ tokens to unwrap
+   * @returns Promise with transaction result
+   */
+  async unwrapWINJ(amount: string): Promise<string> {
+    return unwrapWINJ(this, amount);
   }
 }
