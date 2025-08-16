@@ -20,13 +20,11 @@ export class InjectiveERC20BalanceTool extends StructuredTool<
 
   This tool retrieves token balances without requiring a wallet address (uses connected wallet).
 
-  If neither parameter is provided, returns the native INJ token balance.
+  If neither parameter is provided, returns ticker is the native INJ token balance.
 
   Parameters:
   - contract_address: Optional. The contract address of the token.
-  - ticker: Optional. The token symbol/ticker (e.g., "USDC").
-
-  One of these parameters can be used to specify a non-INJ token.`;
+  - ticker: Optional. The token symbol/ticker (e.g., "USDC").`;
   schema = InjectiveERC20BalanceInputSchema;
 
   constructor(private readonly injectiveKit: InjectiveEVMAgentKit) {

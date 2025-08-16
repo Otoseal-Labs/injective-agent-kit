@@ -13,7 +13,7 @@ export class RedelegateINJTool extends StructuredTool<
   typeof RedelegateINJInputSchema
 > {
   name = "injective_redelegate_inj";
-  description = `Redelegate INJ tokens from one validator to another using the staking precompile contract.
+  description = `Redelegate (Restake) INJ tokens from one validator to another using the staking precompile contract.
 
   Parameters:
   - src_validator_address: The Bech32-encoded address of the validator to redelegate from (required).

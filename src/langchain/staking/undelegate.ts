@@ -12,7 +12,7 @@ export class UndelegateINJTool extends StructuredTool<
   typeof UndelegateINJInputSchema
 > {
   name = "injective_undelegate_inj";
-  description = `Undelegate INJ tokens from a validator using the staking precompile contract.
+  description = `Undelegate (Unstake) INJ tokens from a validator using the staking precompile contract.
 
   Parameters:
   - validator_address: The Bech32-encoded address of the validator to undelegate from (required).

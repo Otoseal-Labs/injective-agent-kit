@@ -13,7 +13,7 @@ export class GetDelegationINJTool extends StructuredTool<
   typeof GetDelegationInputSchema
 > {
   name = "injective_get_delegation";
-  description = `Get delegation information of a delegator on a specific validator.
+  description = `Get delegation information (staking information) of a delegator on a specific validator.
 
   Parameters:
   - delegator_address: Optional. The address of the delegator.

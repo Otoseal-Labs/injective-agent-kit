@@ -12,7 +12,7 @@ export class DelegateINJTool extends StructuredTool<
   typeof DelegateINJInputSchema
 > {
   name = "injective_delegate_inj";
-  description = `Delegate INJ tokens to a validator using the staking precompile contract.
+  description = `Delegate (Stake) INJ tokens to a validator using the staking precompile contract.
 
   Parameters:
   - validator_address: The Bech32-encoded address of the validator to delegate to (required).

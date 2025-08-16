@@ -11,7 +11,7 @@ export class WithdrawDelegatorRewardsTool extends StructuredTool<
   typeof WithdrawDelegatorRewardsInputSchema
 > {
   name = "injective_withdraw_delegator_rewards";
-  description = `Withdraw rewards from a validator using the staking precompile contract.
+  description = `Withdraw delegator rewards (staking rewards) from a validator using the staking precompile contract.
 
   Parameters:
   - validator_address: The Bech32-encoded address of the validator to withdraw rewards from (required).`;
