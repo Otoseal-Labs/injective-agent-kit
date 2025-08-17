@@ -6,7 +6,9 @@ const UnwrapWINJInputSchema = z.object({
   amount: z.string().min(1, "Amount must not be empty"),
 });
 
-export class UnwrapWINJTool extends StructuredTool<typeof UnwrapWINJInputSchema> {
+export class UnwrapWINJTool extends StructuredTool<
+  typeof UnwrapWINJInputSchema
+> {
   name = "injective_unwrap_winj";
   description = `Unwrap WINJ tokens to INJ using WINJ9 contract.
 
@@ -18,7 +20,9 @@ export class UnwrapWINJTool extends StructuredTool<typeof UnwrapWINJInputSchema>
     super();
   }
 
-  protected async _call(input: z.infer<typeof UnwrapWINJInputSchema>): Promise<string> {
+  protected async _call(
+    input: z.infer<typeof UnwrapWINJInputSchema>,
+  ): Promise<string> {
     try {
       const unwrap = await this.injectiveKit.unwrapWINJ(input.amount);
       if (!unwrap) {

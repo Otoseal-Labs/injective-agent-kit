@@ -24,12 +24,12 @@ export class UndelegateINJTool extends StructuredTool<
   }
 
   protected async _call(
-    input: z.infer<typeof UndelegateINJInputSchema>
+    input: z.infer<typeof UndelegateINJInputSchema>,
   ): Promise<string> {
     try {
       const undelegate = await this.injectiveKit.undelegate(
         input.validator_address as InjectiveValidatorAddress,
-        input.amount
+        input.amount,
       );
       if (!undelegate) {
         throw new Error("Undelegate failed");

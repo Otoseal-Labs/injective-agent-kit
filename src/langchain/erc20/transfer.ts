@@ -1,6 +1,6 @@
 import { StructuredTool } from "@langchain/core/tools";
 import { InjectiveEVMAgentKit } from "../../agent";
-import { Address } from 'viem';
+import { Address } from "viem";
 import { z } from "zod";
 
 const InjectiveERC20TransferInputSchema = z.object({
@@ -9,7 +9,9 @@ const InjectiveERC20TransferInputSchema = z.object({
   ticker: z.string().optional(),
 });
 
-export class InjectiveERC20TransferTool extends StructuredTool<typeof InjectiveERC20TransferInputSchema> {
+export class InjectiveERC20TransferTool extends StructuredTool<
+  typeof InjectiveERC20TransferInputSchema
+> {
   name = "injective_erc20_transfer";
   description = `Transfer tokens to another Injective wallet.
 
@@ -23,9 +25,15 @@ export class InjectiveERC20TransferTool extends StructuredTool<typeof InjectiveE
     super();
   }
 
-  protected async _call(input: z.infer<typeof InjectiveERC20TransferInputSchema>): Promise<string> {
+  protected async _call(
+    input: z.infer<typeof InjectiveERC20TransferInputSchema>,
+  ): Promise<string> {
     try {
-      const transfer = await this.injectiveKit.ERC20Transfer(input.amount, input.recipient as Address, input.ticker);
+      const transfer = await this.injectiveKit.ERC20Transfer(
+        input.amount,
+        input.recipient as Address,
+        input.ticker,
+      );
       if (!transfer) {
         throw new Error("Transfer failed");
       }

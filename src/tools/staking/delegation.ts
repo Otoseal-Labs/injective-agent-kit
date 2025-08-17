@@ -2,7 +2,6 @@ import { InjectiveEVMAgentKit } from "../../agent";
 import { Address, formatUnits } from "viem";
 import { getDelegationInfo } from "../../utils";
 import { IDelegationInfoJSON, InjectiveValidatorAddress } from "../../types";
-import { formatToken } from "../../utils";
 
 /**
  * Get delegation information of a delegator on a specific validator
@@ -14,13 +13,13 @@ import { formatToken } from "../../utils";
 export async function getDelegation(
   agent: InjectiveEVMAgentKit,
   validatorAddress: InjectiveValidatorAddress,
-  delegatorAddress?: Address
+  delegatorAddress?: Address,
 ): Promise<IDelegationInfoJSON> {
   if (!delegatorAddress) {
     delegatorAddress = agent.walletAddress;
   }
   console.log(
-    `Querying delegation for ${delegatorAddress} on validator ${validatorAddress}...`
+    `Querying delegation for ${delegatorAddress} on validator ${validatorAddress}...`,
   );
 
   if (!agent.walletClient) {
@@ -36,11 +35,11 @@ export async function getDelegation(
     const delegationInfo = await getDelegationInfo(
       agent,
       validatorAddress,
-      delegatorAddress
+      delegatorAddress,
     );
     if (delegationInfo === null || delegationInfo === undefined) {
       throw new Error(
-        `Failed to retrieve delegation information for ${delegatorAddress} on validator ${validatorAddress}`
+        `Failed to retrieve delegation information for ${delegatorAddress} on validator ${validatorAddress}`,
       );
     }
 

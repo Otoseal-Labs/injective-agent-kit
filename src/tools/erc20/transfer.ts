@@ -1,5 +1,5 @@
 import { InjectiveEVMAgentKit } from "../../agent";
-import { injectiveTestnet } from '../../utils/viem/injective';
+import { injectiveTestnet } from "../../utils/viem/injective";
 import { Account, Address, erc20Abi, isAddress } from "viem";
 import { getTokenDecimals, formatToken } from "../../utils/index";
 
@@ -17,7 +17,7 @@ export async function ERC20Transfer(
   recipient: Address,
   ticker?: string,
 ): Promise<string> {
-  console.log(`Transferring ${amount} ${ticker || 'INJ'} to ${recipient}...`);
+  console.log(`Transferring ${amount} ${ticker || "INJ"} to ${recipient}...`);
 
   if (Number(amount) <= 0) {
     const errorMsg = "Transfer amount must be greater than 0";
@@ -41,7 +41,7 @@ export async function ERC20Transfer(
     }
 
     // Native token transfer case
-    if (!ticker || ticker.toUpperCase() === 'INJ') {
+    if (!ticker || ticker.toUpperCase() === "INJ") {
       if (!agent.publicClient) {
         throw new Error("Public client is not initialized");
       }
@@ -53,7 +53,9 @@ export async function ERC20Transfer(
 
       const injectiveBalance = await agent.getERC20Balance();
       if (Number(injectiveBalance) < Number(amount)) {
-        throw new Error(`Insufficient INJ balance, need: ${amount}, have: ${injectiveBalance}`);
+        throw new Error(
+          `Insufficient INJ balance, need: ${amount}, have: ${injectiveBalance}`,
+        );
       }
 
       const hash = await agent.walletClient.sendTransaction({
@@ -67,9 +69,10 @@ export async function ERC20Transfer(
         throw new Error("Transaction failed to send");
       }
 
-      const transactionReceipt = await agent.publicClient.waitForTransactionReceipt({
-        hash,
-      });
+      const transactionReceipt =
+        await agent.publicClient.waitForTransactionReceipt({
+          hash,
+        });
 
       if (!transactionReceipt || transactionReceipt.status === "reverted") {
         const errorMsg = `Transaction failed: ${JSON.stringify(transactionReceipt)}`;
@@ -80,7 +83,7 @@ export async function ERC20Transfer(
     }
 
     // ERC-20 token transfer case
-    if (typeof ticker !== 'string' || ticker.trim() === '') {
+    if (typeof ticker !== "string" || ticker.trim() === "") {
       throw new Error("Valid ticker is required for token transfers");
     }
 
@@ -90,27 +93,31 @@ export async function ERC20Transfer(
       console.error(`Error: ${errorMsg}`);
       throw new Error(errorMsg);
     }
-    
+
     const decimals = await getTokenDecimals(agent, tokenAddress);
     if (decimals === null || decimals === undefined) {
-      throw new Error(`Failed to retrieve token decimals for contract: ${tokenAddress}`);
+      throw new Error(
+        `Failed to retrieve token decimals for contract: ${tokenAddress}`,
+      );
     }
-    
+
     const formattedAmount = formatToken(amount, decimals);
     if (!formattedAmount) {
       throw new Error("Failed to format token amount");
     }
-    
+
     const tokenBalance = await agent.getERC20Balance(tokenAddress);
     if (Number(tokenBalance) < Number(amount)) {
-      throw new Error(`Insufficient balance of ${ticker.toUpperCase()}, need: ${amount}, have: ${tokenBalance}`);
+      throw new Error(
+        `Insufficient balance of ${ticker.toUpperCase()}, need: ${amount}, have: ${tokenBalance}`,
+      );
     }
     const hash = await agent.walletClient.writeContract({
       account,
       chain: injectiveTestnet,
       address: tokenAddress,
       abi: erc20Abi,
-      functionName: 'transfer',
+      functionName: "transfer",
       args: [recipient, formattedAmount],
     });
 

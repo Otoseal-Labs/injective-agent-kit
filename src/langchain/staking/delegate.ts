@@ -24,12 +24,12 @@ export class DelegateINJTool extends StructuredTool<
   }
 
   protected async _call(
-    input: z.infer<typeof DelegateINJInputSchema>
+    input: z.infer<typeof DelegateINJInputSchema>,
   ): Promise<string> {
     try {
       const delegate = await this.injectiveKit.delegate(
         input.validator_address as InjectiveValidatorAddress,
-        input.amount
+        input.amount,
       );
       if (!delegate) {
         throw new Error("Delegate failed");

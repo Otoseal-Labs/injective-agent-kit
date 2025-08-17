@@ -35,7 +35,9 @@ export async function withdrawDelegatorRewards(
       account,
       chain: injectiveTestnet,
       address: INJECTIVE_STAKING_PRECOMPILE_CONTRACT,
-      abi: parseAbi(["function withdrawDelegatorRewards(string memory validatorAddress) external"]),
+      abi: parseAbi([
+        "function withdrawDelegatorRewards(string memory validatorAddress) external",
+      ]),
       functionName: "withdrawDelegatorRewards",
       args: [validatorAddress],
     });

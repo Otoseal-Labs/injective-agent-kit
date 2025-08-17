@@ -12,7 +12,7 @@ import { getTokenAddressByDenom } from "../../utils/tokens";
  */
 export async function unwrapWINJ(
   agent: InjectiveEVMAgentKit,
-  amount: string
+  amount: string,
 ): Promise<string> {
   console.log(`Unwrapping ${amount} WINJ into INJ...`);
 
@@ -49,7 +49,7 @@ export async function unwrapWINJ(
     const winjBalance = await agent.getERC20Balance(winjAddress);
     if (Number(winjBalance) < Number(amount)) {
       throw new Error(
-        `Insufficient WINJ balance, need: ${amount}, have: ${winjBalance}`
+        `Insufficient WINJ balance, need: ${amount}, have: ${winjBalance}`,
       );
     }
 

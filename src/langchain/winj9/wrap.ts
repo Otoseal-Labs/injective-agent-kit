@@ -18,7 +18,9 @@ export class WrapINJTool extends StructuredTool<typeof WrapINJInputSchema> {
     super();
   }
 
-  protected async _call(input: z.infer<typeof WrapINJInputSchema>): Promise<string> {
+  protected async _call(
+    input: z.infer<typeof WrapINJInputSchema>,
+  ): Promise<string> {
     try {
       const wrap = await this.injectiveKit.wrapINJ(input.amount);
       if (!wrap) {

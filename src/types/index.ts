@@ -1,14 +1,14 @@
 export type InjectiveValidatorAddress = `injvaloper1${string}`;
 
 export interface IToken {
-  id: string,
+  id: string;
   attributes: {
-    address: `0x${string}`,
-    name: string,
-    symbol: string,
-    decimals: number,
-  },
-};
+    address: `0x${string}`;
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
+}
 
 export interface ICosmosCoin {
   amount: bigint;

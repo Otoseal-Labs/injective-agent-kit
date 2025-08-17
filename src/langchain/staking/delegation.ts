@@ -25,7 +25,7 @@ export class GetDelegationINJTool extends StructuredTool<
   }
 
   protected async _call(
-    input: z.infer<typeof GetDelegationInputSchema>
+    input: z.infer<typeof GetDelegationInputSchema>,
   ): Promise<string> {
     try {
       const delegation = await this.injectiveKit.getDelegation(

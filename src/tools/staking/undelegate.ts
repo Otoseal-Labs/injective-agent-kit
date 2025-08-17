@@ -15,7 +15,7 @@ import { InjectiveValidatorAddress } from "../../types";
 export async function undelegateINJ(
   agent: InjectiveEVMAgentKit,
   validatorAddress: InjectiveValidatorAddress,
-  amount: string
+  amount: string,
 ): Promise<string> {
   console.log(`Undelegating ${amount} INJ from ${validatorAddress}...`);
 
@@ -51,7 +51,7 @@ export async function undelegateINJ(
 
     if (Number(delegationInfo.balance.amount) < Number(amount)) {
       throw new Error(
-        `Insufficient staked INJ, need: ${amount}, have: ${delegationInfo.balance.amount}`
+        `Insufficient staked INJ, need: ${amount}, have: ${delegationInfo.balance.amount}`,
       );
     }
 
@@ -59,7 +59,9 @@ export async function undelegateINJ(
       account,
       chain: injectiveTestnet,
       address: INJECTIVE_STAKING_PRECOMPILE_CONTRACT,
-      abi: parseAbi(["function undelegate(string memory validatorAddress, uint256 amount) external"]),
+      abi: parseAbi([
+        "function undelegate(string memory validatorAddress, uint256 amount) external",
+      ]),
       functionName: "undelegate",
       args: [validatorAddress, formattedAmount],
     });

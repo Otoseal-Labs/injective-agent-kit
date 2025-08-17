@@ -15,7 +15,7 @@ import { InjectiveValidatorAddress } from "../../types";
 export async function delegateINJ(
   agent: InjectiveEVMAgentKit,
   validatorAddress: InjectiveValidatorAddress,
-  amount: string
+  amount: string,
 ): Promise<string> {
   console.log(`Delegating ${amount} INJ to ${validatorAddress}...`);
 
@@ -47,7 +47,7 @@ export async function delegateINJ(
     const injectiveBalance = await agent.getERC20Balance();
     if (Number(injectiveBalance) < Number(amount)) {
       throw new Error(
-        `Insufficient INJ balance, need: ${amount}, have: ${injectiveBalance}`
+        `Insufficient INJ balance, need: ${amount}, have: ${injectiveBalance}`,
       );
     }
 
@@ -55,7 +55,9 @@ export async function delegateINJ(
       account,
       chain: injectiveTestnet,
       address: INJECTIVE_STAKING_PRECOMPILE_CONTRACT,
-      abi: parseAbi(["function delegate(string memory validatorAddress, uint256 amount) external"]),
+      abi: parseAbi([
+        "function delegate(string memory validatorAddress, uint256 amount) external",
+      ]),
       functionName: "delegate",
       args: [validatorAddress, formattedAmount],
     });

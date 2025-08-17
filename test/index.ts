@@ -52,7 +52,7 @@ async function setupAgent() {
 
     const agentInstance = new InjectiveEVMAgentKit(
       process.env.PRIVATE_KEY!,
-      ModelProvider.COHERE
+      ModelProvider.COHERE,
     );
     const agentTools = createInjectiveTools(agentInstance);
 
@@ -107,19 +107,19 @@ async function startInteractiveSession(agent: any, config: any) {
 
       const responseStream = await agent.stream(
         { messages: [new HumanMessage(userInput)] },
-        config
+        config,
       );
 
       for await (const responseChunk of responseStream) {
         if ("agent" in responseChunk) {
           console.log(
             "\nInjective Agent:",
-            responseChunk.agent.messages[0].content
+            responseChunk.agent.messages[0].content,
           );
         } else if ("tools" in responseChunk) {
           console.log(
             "\nInjective Agent:",
-            responseChunk.tools.messages[0].content
+            responseChunk.tools.messages[0].content,
           );
         }
         console.log("\n-----------------------------------\n");
@@ -155,7 +155,7 @@ _|    _|  _|    _|  _|        _|    _|    _|          _|  _|    _|    _|
 _|    _|    _|_|_|    _|_|_|  _|    _|      _|_|      _|    _|  _|      _|_|  
                 _|                                                            
             _|_|   
-`
+`,
     );
     const { agent, config } = await setupAgent();
     await startInteractiveSession(agent, config);

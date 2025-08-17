@@ -1,8 +1,10 @@
 import { IToken } from "../types";
 
 export const INJECTIVE_EVM_RPC_URL = "https://sentry.evm-rpc.injective.network";
-export const INJECTIVE_EVM_TESTNET_RPC_URL = "https://k8s.testnet.json-rpc.injective.network";
-export const INJECTIVE_STAKING_PRECOMPILE_CONTRACT = "0x0000000000000000000000000000000000000066";
+export const INJECTIVE_EVM_TESTNET_RPC_URL =
+  "https://k8s.testnet.json-rpc.injective.network";
+export const INJECTIVE_STAKING_PRECOMPILE_CONTRACT =
+  "0x0000000000000000000000000000000000000066";
 
 export const TOKENS: { [key: `0x${string}`]: IToken } = {
   "0x0": {
@@ -22,5 +24,5 @@ export const TOKENS: { [key: `0x${string}`]: IToken } = {
       symbol: "WINJ",
       decimals: 18,
     },
-  }
-}
+  },
+};

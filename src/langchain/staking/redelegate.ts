@@ -4,8 +4,12 @@ import { InjectiveValidatorAddress } from "../../types";
 import { z } from "zod";
 
 const RedelegateINJInputSchema = z.object({
-  validator_src_address: z.string().min(1, "Source validator address must not be empty"),
-  validator_dst_address: z.string().min(1, "Destination validator address must not be empty"),
+  validator_src_address: z
+    .string()
+    .min(1, "Source validator address must not be empty"),
+  validator_dst_address: z
+    .string()
+    .min(1, "Destination validator address must not be empty"),
   amount: z.string().min(1, "Amount must not be empty"),
 });
 
@@ -26,13 +30,13 @@ export class RedelegateINJTool extends StructuredTool<
   }
 
   protected async _call(
-    input: z.infer<typeof RedelegateINJInputSchema>
+    input: z.infer<typeof RedelegateINJInputSchema>,
   ): Promise<string> {
     try {
       const redelegate = await this.injectiveKit.redelegate(
         input.validator_src_address as InjectiveValidatorAddress,
         input.validator_dst_address as InjectiveValidatorAddress,
-        input.amount
+        input.amount,
       );
       if (!redelegate) {
         throw new Error("Redelegate failed");

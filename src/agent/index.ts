@@ -12,7 +12,13 @@ import { privateKeyToAccount } from "viem/accounts";
 import { getApiKeyForProvider } from "./provider";
 import { getERC20Balance, ERC20Transfer } from "../tools/erc20";
 import { wrapINJ, unwrapWINJ } from "../tools/winj9";
-import { delegateINJ, redelegateINJ, undelegateINJ, withdrawDelegatorRewards, getDelegation } from "../tools/staking";
+import {
+  delegateINJ,
+  redelegateINJ,
+  undelegateINJ,
+  withdrawDelegatorRewards,
+  getDelegation,
+} from "../tools/staking";
 import { getTokenAddressByDenom } from "../utils/tokens";
 import { IDelegationInfoJSON, InjectiveValidatorAddress } from "../types";
 
@@ -62,7 +68,7 @@ export class InjectiveEVMAgentKit {
   async ERC20Transfer(
     amount: string,
     recipient: Address,
-    ticker?: string
+    ticker?: string,
   ): Promise<string> {
     return ERC20Transfer(this, amount, recipient, ticker);
   }
@@ -100,7 +106,10 @@ export class InjectiveEVMAgentKit {
    * @param amount The amount of INJ tokens to delegate
    * @returns Promise with the transaction result
    */
-  async delegate(validatorAddress: InjectiveValidatorAddress, amount: string): Promise<string> {
+  async delegate(
+    validatorAddress: InjectiveValidatorAddress,
+    amount: string,
+  ): Promise<string> {
     return delegateINJ(this, validatorAddress, amount);
   }
 
@@ -111,8 +120,17 @@ export class InjectiveEVMAgentKit {
    * @param amount The amount of INJ tokens to redelegate
    * @returns Promise with the transaction result
    */
-  async redelegate(validatorSrcAddress: InjectiveValidatorAddress, validatorDstAddress: InjectiveValidatorAddress, amount: string): Promise<string> {
-    return redelegateINJ(this, validatorSrcAddress, validatorDstAddress, amount);
+  async redelegate(
+    validatorSrcAddress: InjectiveValidatorAddress,
+    validatorDstAddress: InjectiveValidatorAddress,
+    amount: string,
+  ): Promise<string> {
+    return redelegateINJ(
+      this,
+      validatorSrcAddress,
+      validatorDstAddress,
+      amount,
+    );
   }
 
   /**
@@ -121,7 +139,10 @@ export class InjectiveEVMAgentKit {
    * @param amount The amount of INJ tokens to undelegate
    * @returns Promise with the transaction result
    */
-  async undelegate(validatorAddress: InjectiveValidatorAddress, amount: string): Promise<string> {
+  async undelegate(
+    validatorAddress: InjectiveValidatorAddress,
+    amount: string,
+  ): Promise<string> {
     return undelegateINJ(this, validatorAddress, amount);
   }
 
@@ -130,7 +151,9 @@ export class InjectiveEVMAgentKit {
    * @param validatorAddress The Bech32-encoded address of the validator to withdraw rewards from
    * @returns Promise with the transaction result
    */
-  async withdrawDelegatorRewards(validatorAddress: InjectiveValidatorAddress): Promise<string> {
+  async withdrawDelegatorRewards(
+    validatorAddress: InjectiveValidatorAddress,
+  ): Promise<string> {
     return withdrawDelegatorRewards(this, validatorAddress);
   }
 
@@ -140,7 +163,10 @@ export class InjectiveEVMAgentKit {
    * @param delegatorAddress Optional. The address of the delegator. (If not provided, defaults to the caller's address)
    * @returns  Promise with delegation information with formatted delegated amount
    */
-  async getDelegation(validatorAddress: InjectiveValidatorAddress, delegatorAddress?: Address): Promise<IDelegationInfoJSON> {
+  async getDelegation(
+    validatorAddress: InjectiveValidatorAddress,
+    delegatorAddress?: Address,
+  ): Promise<IDelegationInfoJSON> {
     return getDelegation(this, validatorAddress, delegatorAddress);
   }
 }

@@ -22,11 +22,11 @@ export class WithdrawDelegatorRewardsTool extends StructuredTool<
   }
 
   protected async _call(
-    input: z.infer<typeof WithdrawDelegatorRewardsInputSchema>
+    input: z.infer<typeof WithdrawDelegatorRewardsInputSchema>,
   ): Promise<string> {
     try {
       const rewards = await this.injectiveKit.withdrawDelegatorRewards(
-        input.validator_address as InjectiveValidatorAddress
+        input.validator_address as InjectiveValidatorAddress,
       );
       if (!rewards) {
         throw new Error("Withdraw delegator rewards failed");

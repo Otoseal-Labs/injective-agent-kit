@@ -32,10 +32,10 @@ export class InjectiveERC20BalanceTool extends StructuredTool<
   }
 
   protected async _call(
-    input: z.infer<typeof InjectiveERC20BalanceInputSchema>
+    input: z.infer<typeof InjectiveERC20BalanceInputSchema>,
   ): Promise<string> {
     try {
-      var balance;
+      let balance;
       if (input) {
         let contract_address;
         if (input.ticker) {
@@ -45,7 +45,7 @@ export class InjectiveERC20BalanceTool extends StructuredTool<
             contract_address = getTokenAddressByDenom(input.ticker);
             if (!contract_address) {
               throw new Error(
-                `Token with ticker ${input.ticker} not found in token list`
+                `Token with ticker ${input.ticker} not found in token list`,
               );
             }
           }
@@ -53,7 +53,7 @@ export class InjectiveERC20BalanceTool extends StructuredTool<
           contract_address = input.contract_address;
         }
         balance = await this.injectiveKit.getERC20Balance(
-          contract_address as Address
+          contract_address as Address,
         );
       } else {
         balance = await this.injectiveKit.getERC20Balance();

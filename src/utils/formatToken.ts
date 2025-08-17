@@ -1,7 +1,7 @@
-import { parseUnits, formatUnits } from 'viem';
+import { parseUnits, formatUnits } from "viem";
 
 export function formatToken(amount: string | number, decimals: number): bigint {
-  const amountStr = typeof amount === 'number' ? amount.toString() : amount;
+  const amountStr = typeof amount === "number" ? amount.toString() : amount;
   return parseUnits(amountStr, decimals);
 }
 

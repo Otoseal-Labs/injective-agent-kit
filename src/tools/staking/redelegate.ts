@@ -17,10 +17,10 @@ export async function redelegateINJ(
   agent: InjectiveEVMAgentKit,
   validatorSrcAddress: InjectiveValidatorAddress,
   validatorDstAddress: InjectiveValidatorAddress,
-  amount: string
+  amount: string,
 ): Promise<string> {
   console.log(
-    `Redelegating ${amount} INJ from ${validatorSrcAddress} to ${validatorDstAddress}...`
+    `Redelegating ${amount} INJ from ${validatorSrcAddress} to ${validatorDstAddress}...`,
   );
 
   if (Number(amount) <= 0) {
@@ -55,7 +55,7 @@ export async function redelegateINJ(
 
     if (Number(delegationInfo.balance.amount) < Number(amount)) {
       throw new Error(
-        `Insufficient staked INJ, need: ${amount}, have: ${delegationInfo.balance.amount}`
+        `Insufficient staked INJ, need: ${amount}, have: ${delegationInfo.balance.amount}`,
       );
     }
 

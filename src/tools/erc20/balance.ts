@@ -12,7 +12,9 @@ export async function getERC20Balance(
   agent: InjectiveEVMAgentKit,
   contractAddress?: Address,
 ): Promise<string> {
-  console.log(`Querying balance of ${contractAddress ? contractAddress : 'INJ'} for ${agent.walletAddress}...`);
+  console.log(
+    `Querying balance of ${contractAddress ? contractAddress : "INJ"} for ${agent.walletAddress}...`,
+  );
   try {
     if (!contractAddress) {
       // Handle native token balance
@@ -25,7 +27,7 @@ export async function getERC20Balance(
       }
 
       const balance = await agent.publicClient.getBalance({
-        address: agent.walletAddress
+        address: agent.walletAddress,
       });
 
       return formatEther(balance);
@@ -38,16 +40,20 @@ export async function getERC20Balance(
 
     const balance = await getBalance(agent, contractAddress);
     if (balance === null || balance === undefined) {
-      throw new Error(`Failed to retrieve balance for contract: ${contractAddress}`);
+      throw new Error(
+        `Failed to retrieve balance for contract: ${contractAddress}`,
+      );
     }
 
     const decimals = await getTokenDecimals(agent, contractAddress);
     if (decimals === null || decimals === undefined) {
-      throw new Error(`Failed to retrieve token decimals for contract: ${contractAddress}`);
+      throw new Error(
+        `Failed to retrieve token decimals for contract: ${contractAddress}`,
+      );
     }
 
     const formatBalance = formatWei(Number(balance), decimals);
-    return formatBalance.toString() || '0';
+    return formatBalance.toString() || "0";
   } catch (error) {
     const errorMsg = error instanceof Error ? error?.message : String(error);
     console.error(errorMsg);
