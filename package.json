@@ -1,5 +1,5 @@
 {
-  "name": "injective-agent-kit",
+  "name": "@otoseal/injective-agent-kit",
   "version": "0.1.0",
   "description": "Typescript SDK for building AI agents on the Injective",
   "type": "module",
@@ -8,10 +8,15 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json",
     "test": "tsx test/index.ts",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
@@ -24,12 +29,18 @@
   ],
   "author": "Otoseal Labs",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/otoseal-labs/injective-agent-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/otoseal-labs/injective-agent-kit/issues"
+  },
+  "homepage": "https://github.com/otoseal-labs/injective-agent-kit#readme",
   "packageManager": "pnpm@10.14.0",
   "devDependencies": {
     "@langchain/cohere": "^0.3.4",
     "@langchain/langgraph": "^0.4.5",
-    "@langchain/mistralai": "^0.2.1",
-    "@langchain/openai": "^0.6.7",
     "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "^8.18.2",
     "@typescript-eslint/parser": "^8.18.2",
@@ -49,6 +60,6 @@
     "dotenv": "^17.2.1",
     "openai": "^5.12.2",
     "viem": "^2.33.3",
-    "zod": "^3.24.2"
+    "zod": "<=3.25.67"
   }
 }

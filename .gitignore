@@ -26,6 +26,12 @@ build/Release
 node_modules/
 jspm_packages/
 
+# build / generate output
+dist
+
+# Output of 'npm pack'
+*.tgz
+
 # TypeScript cache
 *.tsbuildinfo
 

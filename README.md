@@ -39,6 +39,6 @@ Current capabilities in version **0.1.0** include:
 ## 🛠 Installation
 
 ```bash
-pnpm add injective-agent-kit
+pnpm add @otoseal/injective-agent-kit
 # or
-npm install injective-agent-kit
+npm install @otoseal/injective-agent-kit

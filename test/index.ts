@@ -3,8 +3,6 @@ import { createInjectiveTools } from "../src/langchain";
 import { HumanMessage } from "@langchain/core/messages";
 import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
-// import { ChatOpenAI } from "@langchain/openai";
-// import { ChatMistralAI } from "@langchain/mistralai";
 import { ChatCohere } from "@langchain/cohere";
 import * as dotenv from "dotenv";
 import * as readline from "readline";
@@ -14,7 +12,7 @@ dotenv.config();
 
 function checkRequiredEnvVars(): void {
   const missingVars: string[] = [];
-  const requiredVars = ["COHERE_API_KEY", "PRIVATE_KEY", "RPC_URL"];
+  const requiredVars = ["COHERE_API_KEY", "PRIVATE_KEY"];
 
   requiredVars.forEach((varName) => {
     if (!process.env[varName]) {
@@ -35,20 +33,10 @@ async function setupAgent() {
   try {
     checkRequiredEnvVars();
 
-    // const llm = new ChatOpenAI({
-    //   model: "gpt-4o",
-    //   temperature: 0,
-    // });
-
     const llm = new ChatCohere({
       model: "command-r-plus",
       temperature: 0,
     });
-
-    // const llm = new ChatMistralAI({
-    //   model: "magistral-small-2507",
-    //   temperature: 0,
-    // });
 
     const agentInstance = new InjectiveAgentKit(
       process.env.PRIVATE_KEY!,

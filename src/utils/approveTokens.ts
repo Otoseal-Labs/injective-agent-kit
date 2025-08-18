@@ -1,15 +1,17 @@
-import { Address, erc20Abi } from "viem";
+import { Address, erc20Abi, PublicClient, WalletClient } from "viem";
 import { InjectiveAgentKit } from "../agent";
 
 export async function approveToken(
   agent: InjectiveAgentKit,
+  publicClient: PublicClient,
+  walletClient: WalletClient,
   tokenAddress: Address,
   spender: Address,
   amount: bigint,
 ): Promise<void> {
   try {
     // Check current allowance
-    const allowance = await agent.publicClient.readContract({
+    const allowance = await publicClient.readContract({
       address: tokenAddress,
       abi: erc20Abi,
       functionName: "allowance",
@@ -22,7 +24,7 @@ export async function approveToken(
     }
 
     // Prepare approval transaction
-    await agent.walletClient.writeContract({
+    await walletClient.writeContract({
       address: tokenAddress,
       abi: erc20Abi,
       functionName: "approve",
