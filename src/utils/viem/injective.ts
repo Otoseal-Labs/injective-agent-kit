@@ -11,8 +11,7 @@ export const injective = defineChain({
   rpcUrls: {
     default: {
       http: ["https://sentry.evm-rpc.injective.network"],
-      // Mock websocket URL because the real one for Injective EVM is not available
-      webSocket: ["wss://rpc.injective.network"],
+      webSocket: ["wss://sentry.evm-ws.injective.network"],
     },
   },
   blockExplorers: {
@@ -41,8 +40,7 @@ export const injectiveTestnet = defineChain({
   rpcUrls: {
     default: {
       http: ["https://k8s.testnet.json-rpc.injective.network/"],
-      // Mock websocket URL because the real one for Injective EVM testnet is not available
-      webSocket: ["wss://rpc.injective.network"],
+      webSocket: ["wss://k8s.testnet.ws.injective.network"],
     },
   },
   blockExplorers: {

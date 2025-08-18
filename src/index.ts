@@ -1,6 +1,6 @@
-import { InjectiveEVMAgentKit } from "./agent";
+import { InjectiveAgentKit } from "./agent";
 import { createInjectiveTools } from "./langchain";
 
-export { InjectiveEVMAgentKit, createInjectiveTools };
+export { InjectiveAgentKit, createInjectiveTools };
 
 export * from "./types";

@@ -1,17 +1,19 @@
-import { InjectiveEVMAgentKit } from "../../agent";
+import { InjectiveAgentKit } from "../../agent";
 import { Address, formatUnits } from "viem";
 import { getDelegationInfo } from "../../utils";
 import { IDelegationInfoJSON, InjectiveValidatorAddress } from "../../types";
 
 /**
  * Get delegation information of a delegator on a specific validator
- * @param agent InjectiveEVMAgentKit instance
+ * @param agent InjectiveAgentKit instance
+ * @param network The network to use (e.g., "TESTNET" or "MAINNET")
  * @param validatorAddress The Bech32-encoded address of the validator
  * @param delegatorAddress Optional. The address of the delegator. (If not provided, defaults to the caller's address)
  * @returns Promise with delegation information with formatted delegated amount
  */
 export async function getDelegation(
-  agent: InjectiveEVMAgentKit,
+  agent: InjectiveAgentKit,
+  network: string,
   validatorAddress: InjectiveValidatorAddress,
   delegatorAddress?: Address,
 ): Promise<IDelegationInfoJSON> {
@@ -19,21 +21,23 @@ export async function getDelegation(
     delegatorAddress = agent.walletAddress;
   }
   console.log(
-    `Querying delegation for ${delegatorAddress} on validator ${validatorAddress}...`,
+    `Querying delegation for ${delegatorAddress} on validator ${validatorAddress} on ${network}...`,
   );
+  const walletClient = agent.getWalletClient(network);
+  const publicClient = agent.getPublicClient(network);
 
-  if (!agent.walletClient) {
+  if (!walletClient) {
     const errorMsg = "Wallet client is not initialized";
     throw new Error(errorMsg);
   }
 
-  if (!agent.publicClient) {
+  if (!publicClient) {
     throw new Error("Public client is not initialized");
   }
 
   try {
     const delegationInfo = await getDelegationInfo(
-      agent,
+      publicClient,
       validatorAddress,
       delegatorAddress,
     );

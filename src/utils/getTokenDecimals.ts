@@ -1,13 +1,12 @@
-import { parseAbi, Address } from "viem";
-import { InjectiveEVMAgentKit } from "../agent";
+import { parseAbi, Address, PublicClient } from "viem";
 
 const erc20Abi = parseAbi(["function decimals() view returns (uint8)"]);
 
 export async function getTokenDecimals(
-  agent: InjectiveEVMAgentKit,
+  publicClient: PublicClient,
   tokenAddress: Address,
 ): Promise<number> {
-  const decimals = await agent.publicClient.readContract({
+  const decimals = await publicClient.readContract({
     address: tokenAddress,
     abi: erc20Abi,
     functionName: "decimals",

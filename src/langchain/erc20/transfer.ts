@@ -1,9 +1,10 @@
 import { StructuredTool } from "@langchain/core/tools";
-import { InjectiveEVMAgentKit } from "../../agent";
+import { InjectiveAgentKit } from "../../agent";
 import { Address } from "viem";
 import { z } from "zod";
 
 const InjectiveERC20TransferInputSchema = z.object({
+  network: z.string().default("MAINNET"),
   amount: z.string().min(1, "Amount must not be empty"),
   recipient: z.string(),
   ticker: z.string().optional(),
@@ -16,12 +17,13 @@ export class InjectiveERC20TransferTool extends StructuredTool<
   description = `Transfer tokens to another Injective wallet.
 
   Parameters:
+  - network: The network to use (e.g., "TESTNET" or "MAINNET") (required). Default is "MAINNET" if network param is not provided.
   - amount: The amount of tokens to transfer as a string (e.g., "1.5") (required).
   - recipient: The recipient's wallet address (required).
   - ticker: Optional. The token symbol/ticker (e.g., "USDC"). Do not specify for native Injective token transfers.`;
   schema = InjectiveERC20TransferInputSchema;
 
-  constructor(private readonly injectiveKit: InjectiveEVMAgentKit) {
+  constructor(private readonly injectiveKit: InjectiveAgentKit) {
     super();
   }
 
@@ -30,6 +32,7 @@ export class InjectiveERC20TransferTool extends StructuredTool<
   ): Promise<string> {
     try {
       const transfer = await this.injectiveKit.ERC20Transfer(
+        input.network,
         input.amount,
         input.recipient as Address,
         input.ticker,

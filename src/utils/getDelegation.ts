@@ -1,5 +1,4 @@
-import { parseAbi, Address } from "viem";
-import { InjectiveEVMAgentKit } from "../agent";
+import { parseAbi, Address, PublicClient } from "viem";
 import { INJECTIVE_STAKING_PRECOMPILE_CONTRACT } from "../commons";
 import { IDelegationInfo, InjectiveValidatorAddress } from "../types";
 
@@ -8,11 +7,11 @@ const stakingPrecompileAbi = parseAbi([
 ]);
 
 export async function getDelegationInfo(
-  agent: InjectiveEVMAgentKit,
+  publicClient: PublicClient,
   validatorAddress: InjectiveValidatorAddress,
   delegatorAddress: Address,
 ): Promise<IDelegationInfo> {
-  const [shares, balance] = (await agent.publicClient.readContract({
+  const [shares, balance] = (await publicClient.readContract({
     address: INJECTIVE_STAKING_PRECOMPILE_CONTRACT,
     abi: stakingPrecompileAbi,
     functionName: "delegation",

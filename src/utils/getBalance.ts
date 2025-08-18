@@ -1,15 +1,16 @@
-import { parseAbi, Address } from "viem";
-import { InjectiveEVMAgentKit } from "../agent";
+import { parseAbi, Address, PublicClient } from "viem";
+import { InjectiveAgentKit } from "../agent";
 
 const erc20Abi = parseAbi([
   "function balanceOf(address) view returns (uint256)",
 ]);
 
 export async function getBalance(
-  agent: InjectiveEVMAgentKit,
+  agent: InjectiveAgentKit,
+  publicClient: PublicClient,
   tokenAddress: Address,
 ): Promise<bigint> {
-  const balance = await agent.publicClient.readContract({
+  const balance = await publicClient.readContract({
     address: tokenAddress,
     abi: erc20Abi,
     functionName: "balanceOf",

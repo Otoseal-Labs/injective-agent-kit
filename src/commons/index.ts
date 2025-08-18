@@ -25,4 +25,13 @@ export const TOKENS: { [key: `0x${string}`]: IToken } = {
       decimals: 18,
     },
   },
+  "0xaDC7bcB5d8fe053Ef19b4E0C861c262Af6e0db60": {
+    id: "injective_0xaDC7bcB5d8fe053Ef19b4E0C861c262Af6e0db60",
+    attributes: {
+      address: "0xaDC7bcB5d8fe053Ef19b4E0C861c262Af6e0db60",
+      name: "MTS USDT",
+      symbol: "USDT",
+      decimals: 18,
+    },
+  },
 };

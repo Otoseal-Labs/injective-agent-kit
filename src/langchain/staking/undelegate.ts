@@ -1,9 +1,10 @@
 import { StructuredTool } from "@langchain/core/tools";
-import { InjectiveEVMAgentKit } from "../../agent";
+import { InjectiveAgentKit } from "../../agent";
 import { InjectiveValidatorAddress } from "../../types";
 import { z } from "zod";
 
 const UndelegateINJInputSchema = z.object({
+  network: z.string().default("MAINNET"),
   validator_address: z.string().min(1, "Validator address must not be empty"),
   amount: z.string().min(1, "Amount must not be empty"),
 });
@@ -15,11 +16,12 @@ export class UndelegateINJTool extends StructuredTool<
   description = `Undelegate (Unstake) INJ tokens from a validator using the staking precompile contract.
 
   Parameters:
+  - network: The network to use (e.g., "TESTNET" or "MAINNET") (required). Default is "MAINNET" if network param is not provided.
   - validator_address: The Bech32-encoded address of the validator to undelegate from (required).
   - amount: The amount of INJ token to undelegate as a string (e.g., "1.5") (required).`;
   schema = UndelegateINJInputSchema;
 
-  constructor(private readonly injectiveKit: InjectiveEVMAgentKit) {
+  constructor(private readonly injectiveKit: InjectiveAgentKit) {
     super();
   }
 
@@ -28,6 +30,7 @@ export class UndelegateINJTool extends StructuredTool<
   ): Promise<string> {
     try {
       const undelegate = await this.injectiveKit.undelegate(
+        input.network,
         input.validator_address as InjectiveValidatorAddress,
         input.amount,
       );

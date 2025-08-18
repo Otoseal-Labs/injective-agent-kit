@@ -1,16 +1,14 @@
 import { StructuredTool } from "@langchain/core/tools";
-import { InjectiveEVMAgentKit } from "../../agent";
+import { InjectiveAgentKit } from "../../agent";
 import { Address } from "viem";
 import { z } from "zod";
 import { getTokenAddressByDenom } from "../../utils/tokens";
 
-const InjectiveERC20BalanceInputSchema = z
-  .object({
-    contract_address: z.string().optional(),
-    ticker: z.string().optional(),
-  })
-  .nullable()
-  .transform((v) => v ?? {});
+const InjectiveERC20BalanceInputSchema = z.object({
+  network: z.string().default("MAINNET"),
+  contract_address: z.string().optional(),
+  ticker: z.string().optional(),
+});
 
 export class InjectiveERC20BalanceTool extends StructuredTool<
   typeof InjectiveERC20BalanceInputSchema
@@ -23,11 +21,13 @@ export class InjectiveERC20BalanceTool extends StructuredTool<
   If neither parameter is provided, returns ticker is the native INJ token balance.
 
   Parameters:
+  - network: The network to use (e.g., "TESTNET" or "MAINNET") (required). Default is "MAINNET" if network param is not provided.
   - contract_address: Optional. The contract address of the token.
-  - ticker: Optional. The token symbol/ticker (e.g., "USDC").`;
+  - ticker: Optional. The token symbol/ticker (e.g., "USDC").
+  `;
   schema = InjectiveERC20BalanceInputSchema;
 
-  constructor(private readonly injectiveKit: InjectiveEVMAgentKit) {
+  constructor(private readonly injectiveKit: InjectiveAgentKit) {
     super();
   }
 
@@ -53,10 +53,11 @@ export class InjectiveERC20BalanceTool extends StructuredTool<
           contract_address = input.contract_address;
         }
         balance = await this.injectiveKit.getERC20Balance(
+          input.network,
           contract_address as Address,
         );
       } else {
-        balance = await this.injectiveKit.getERC20Balance();
+        balance = await this.injectiveKit.getERC20Balance(input.network);
       }
 
       return JSON.stringify({

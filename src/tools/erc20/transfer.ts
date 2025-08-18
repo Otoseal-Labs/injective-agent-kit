@@ -1,23 +1,29 @@
-import { InjectiveEVMAgentKit } from "../../agent";
+import { InjectiveAgentKit } from "../../agent";
 import { injectiveTestnet } from "../../utils/viem/injective";
 import { Account, Address, erc20Abi, isAddress } from "viem";
 import { getTokenDecimals, formatToken } from "../../utils/index";
 
 /**
  * Transfer INJ tokens or ERC-20 tokens
- * @param agent InjectiveEVMAgentKit instance
+ * @param agent InjectiveAgentKit instance
+ * @param network The network to use (e.g., "TESTNET" or "MAINNET")
  * @param amount Amount to transfer as a string (e.g., "1.5" for 1.5 tokens)
  * @param recipient Recipient address
  * @param ticker Optional token ticker (if not provided, transfers native INJ)
  * @returns Promise with transaction result
  */
 export async function ERC20Transfer(
-  agent: InjectiveEVMAgentKit,
+  agent: InjectiveAgentKit,
+  network: string,
   amount: string,
   recipient: Address,
   ticker?: string,
 ): Promise<string> {
-  console.log(`Transferring ${amount} ${ticker || "INJ"} to ${recipient}...`);
+  console.log(
+    `Transferring ${amount} ${ticker || "INJ"} to ${recipient} on ${network}...`,
+  );
+  const walletClient = agent.getWalletClient(network);
+  const publicClient = agent.getPublicClient(network);
 
   if (Number(amount) <= 0) {
     const errorMsg = "Transfer amount must be greater than 0";
@@ -29,20 +35,20 @@ export async function ERC20Transfer(
     throw new Error(errorMsg);
   }
 
-  if (!agent.walletClient) {
+  if (!walletClient) {
     const errorMsg = "Wallet client is not initialized";
     throw new Error(errorMsg);
   }
 
   try {
-    const account = agent.walletClient.account as Account;
+    const account = walletClient.account as Account;
     if (!account) {
       throw new Error("Wallet account is not initialized");
     }
 
     // Native token transfer case
     if (!ticker || ticker.toUpperCase() === "INJ") {
-      if (!agent.publicClient) {
+      if (!publicClient) {
         throw new Error("Public client is not initialized");
       }
 
@@ -51,14 +57,14 @@ export async function ERC20Transfer(
         throw new Error("Failed to format amount");
       }
 
-      const injectiveBalance = await agent.getERC20Balance();
+      const injectiveBalance = await agent.getERC20Balance(network);
       if (Number(injectiveBalance) < Number(amount)) {
         throw new Error(
           `Insufficient INJ balance, need: ${amount}, have: ${injectiveBalance}`,
         );
       }
 
-      const hash = await agent.walletClient.sendTransaction({
+      const hash = await walletClient.sendTransaction({
         account,
         chain: injectiveTestnet,
         to: recipient,
@@ -69,10 +75,9 @@ export async function ERC20Transfer(
         throw new Error("Transaction failed to send");
       }
 
-      const transactionReceipt =
-        await agent.publicClient.waitForTransactionReceipt({
-          hash,
-        });
+      const transactionReceipt = await publicClient.waitForTransactionReceipt({
+        hash,
+      });
 
       if (!transactionReceipt || transactionReceipt.status === "reverted") {
         const errorMsg = `Transaction failed: ${JSON.stringify(transactionReceipt)}`;
@@ -94,7 +99,7 @@ export async function ERC20Transfer(
       throw new Error(errorMsg);
     }
 
-    const decimals = await getTokenDecimals(agent, tokenAddress);
+    const decimals = await getTokenDecimals(publicClient, tokenAddress);
     if (decimals === null || decimals === undefined) {
       throw new Error(
         `Failed to retrieve token decimals for contract: ${tokenAddress}`,
@@ -106,13 +111,13 @@ export async function ERC20Transfer(
       throw new Error("Failed to format token amount");
     }
 
-    const tokenBalance = await agent.getERC20Balance(tokenAddress);
+    const tokenBalance = await agent.getERC20Balance(network, tokenAddress);
     if (Number(tokenBalance) < Number(amount)) {
       throw new Error(
         `Insufficient balance of ${ticker.toUpperCase()}, need: ${amount}, have: ${tokenBalance}`,
       );
     }
-    const hash = await agent.walletClient.writeContract({
+    const hash = await walletClient.writeContract({
       account,
       chain: injectiveTestnet,
       address: tokenAddress,

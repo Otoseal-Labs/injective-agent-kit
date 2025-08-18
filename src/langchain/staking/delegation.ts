@@ -1,10 +1,11 @@
 import { StructuredTool } from "@langchain/core/tools";
-import { InjectiveEVMAgentKit } from "../../agent";
+import { InjectiveAgentKit } from "../../agent";
 import { Address } from "viem";
 import { InjectiveValidatorAddress } from "../../types";
 import { z } from "zod";
 
 const GetDelegationInputSchema = z.object({
+  network: z.string().default("MAINNET"),
   delegator_address: z.string().optional(),
   validator_address: z.string().min(1, "Validator address must not be empty"),
 });
@@ -16,11 +17,12 @@ export class GetDelegationINJTool extends StructuredTool<
   description = `Get delegation information (staking information) of a delegator on a specific validator.
 
   Parameters:
+  - network: The network to use (e.g., "TESTNET" or "MAINNET") (required). Default is "MAINNET" if network param is not provided.
   - delegator_address: Optional. The address of the delegator.
   - validator_address: The Bech32-encoded address of the validator (required).`;
   schema = GetDelegationInputSchema;
 
-  constructor(private readonly injectiveKit: InjectiveEVMAgentKit) {
+  constructor(private readonly injectiveKit: InjectiveAgentKit) {
     super();
   }
 
@@ -29,6 +31,7 @@ export class GetDelegationINJTool extends StructuredTool<
   ): Promise<string> {
     try {
       const delegation = await this.injectiveKit.getDelegation(
+        input.network,
         input.validator_address as InjectiveValidatorAddress,
         input.delegator_address as Address,
       );

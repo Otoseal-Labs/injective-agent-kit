@@ -1,9 +1,10 @@
 import { StructuredTool } from "@langchain/core/tools";
-import { InjectiveEVMAgentKit } from "../../agent";
+import { InjectiveAgentKit } from "../../agent";
 import { InjectiveValidatorAddress } from "../../types";
 import { z } from "zod";
 
 const WithdrawDelegatorRewardsInputSchema = z.object({
+  network: z.string().default("MAINNET"),
   validator_address: z.string().min(1, "Validator address must not be empty"),
 });
 
@@ -14,10 +15,11 @@ export class WithdrawDelegatorRewardsTool extends StructuredTool<
   description = `Withdraw delegator rewards (staking rewards) from a validator using the staking precompile contract.
 
   Parameters:
+  - network: The network to use (e.g., "TESTNET" or "MAINNET") (required). Default is "MAINNET" if network param is not provided.
   - validator_address: The Bech32-encoded address of the validator to withdraw rewards from (required).`;
   schema = WithdrawDelegatorRewardsInputSchema;
 
-  constructor(private readonly injectiveKit: InjectiveEVMAgentKit) {
+  constructor(private readonly injectiveKit: InjectiveAgentKit) {
     super();
   }
 
@@ -26,6 +28,7 @@ export class WithdrawDelegatorRewardsTool extends StructuredTool<
   ): Promise<string> {
     try {
       const rewards = await this.injectiveKit.withdrawDelegatorRewards(
+        input.network,
         input.validator_address as InjectiveValidatorAddress,
       );
       if (!rewards) {

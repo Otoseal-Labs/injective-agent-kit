@@ -1,8 +1,8 @@
 import { Address, erc20Abi } from "viem";
-import { InjectiveEVMAgentKit } from "../agent";
+import { InjectiveAgentKit } from "../agent";
 
 export async function approveToken(
-  agent: InjectiveEVMAgentKit,
+  agent: InjectiveAgentKit,
   tokenAddress: Address,
   spender: Address,
   amount: bigint,

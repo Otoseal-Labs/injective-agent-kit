@@ -1,4 +1,4 @@
-import { InjectiveEVMAgentKit } from "../src";
+import { InjectiveAgentKit } from "../src";
 import { createInjectiveTools } from "../src/langchain";
 import { HumanMessage } from "@langchain/core/messages";
 import { MemorySaver } from "@langchain/langgraph";
@@ -50,7 +50,7 @@ async function setupAgent() {
     //   temperature: 0,
     // });
 
-    const agentInstance = new InjectiveEVMAgentKit(
+    const agentInstance = new InjectiveAgentKit(
       process.env.PRIVATE_KEY!,
       ModelProvider.COHERE,
     );
