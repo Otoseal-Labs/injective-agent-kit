@@ -51,7 +51,7 @@ export async function fetchPositions(
       direction as TradeDirection | undefined,
     );
 
-    console.log("Positions fetched successfully:", position.positions);
+    console.log("Positions fetched successfully");
     return `Positions of ${userInjWallet} on ${network}: ${JSON.stringify(formatDisplayPositions(position.positions))}`;
   } catch (error) {
     const errorMsg = error instanceof Error ? error?.message : String(error);
