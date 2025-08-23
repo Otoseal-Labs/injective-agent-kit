@@ -12,7 +12,10 @@ import { privateKeyToAccount } from "viem/accounts";
 import { getApiKeyForProvider } from "./provider";
 import { getERC20Balance, ERC20Transfer } from "../tools/erc20";
 import { wrapINJ, unwrapWINJ } from "../tools/winj9";
-import { createDerivativeMarketOrder } from "../tools/derivative";
+import {
+  createDerivativeMarketOrder,
+  fetchPositions,
+} from "../tools/derivative";
 import {
   delegateINJ,
   redelegateINJ,
@@ -273,5 +276,22 @@ export class InjectiveAgentKit {
       margin,
       triggerPrice,
     );
+  }
+
+  /**
+   * Fetches the positions for a user on a specific network.
+   * @param network The network to fetch positions from (e.g., "MAINNET" or "TESTNET").
+   * @param tickers Optional. An array of ticker symbols to fetch multiple positions.
+   * @param subaccountIndex Optional. The subaccount index to use for fetching positions.
+   * @param direction Optional. The direction of the positions to fetch (e.g., "buy" or "sell").
+   * @returns Promise with the fetched positions.
+   */
+  async fetchPositions(
+    network: string,
+    tickers?: string[],
+    subaccountIndex?: string,
+    direction?: "buy" | "sell" | "long" | "short",
+  ): Promise<any> {
+    return fetchPositions(this, network, tickers, subaccountIndex, direction);
   }
 }

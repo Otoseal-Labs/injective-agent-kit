@@ -1,6 +1,7 @@
 import {
   DerivativeMarket,
   IndexerGrpcDerivativesApi,
+  TradeDirection,
 } from "@injectivelabs/sdk-ts";
 import { Network, getNetworkEndpoints } from "@injectivelabs/networks";
 
@@ -87,6 +88,38 @@ export async function getWorstPriceForDerivativeMarket(
   }
 
   return worstPrice;
+}
+
+export async function fetchPositions(
+  isTestnet: boolean,
+  marketIds?: string[],
+  subaccountId?: string,
+  direction?: TradeDirection,
+) {
+  const endpoints = getNetworkEndpoints(
+    isTestnet ? Network.Testnet : Network.Mainnet,
+  );
+  const indexerGrpcDerivativesApi = new IndexerGrpcDerivativesApi(
+    endpoints.indexer,
+  );
+
+  const params: {
+    marketIds?: string[];
+    subaccountId?: string;
+    direction?: TradeDirection;
+  } = {};
+
+  if (marketIds !== undefined) {
+    params.marketIds = marketIds;
+  }
+  if (subaccountId !== undefined) {
+    params.subaccountId = subaccountId;
+  }
+  if (direction !== undefined) {
+    params.direction = direction;
+  }
+
+  return indexerGrpcDerivativesApi.fetchPositions(params);
 }
 
 export function normalizeQuantity(
