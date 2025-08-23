@@ -4,3 +4,5 @@ export * from "./getTokenDecimals";
 export * from "./getBalance";
 export * from "./getDelegation";
 export * from "./tokens";
+export * from "./injectiveBroadcaster";
+export * from "./injectiveDerivativeMarkets";

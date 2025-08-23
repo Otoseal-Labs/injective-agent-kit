@@ -12,6 +12,7 @@ import { privateKeyToAccount } from "viem/accounts";
 import { getApiKeyForProvider } from "./provider";
 import { getERC20Balance, ERC20Transfer } from "../tools/erc20";
 import { wrapINJ, unwrapWINJ } from "../tools/winj9";
+import { createDerivativeMarketOrder } from "../tools/derivative";
 import {
   delegateINJ,
   redelegateINJ,
@@ -19,6 +20,7 @@ import {
   withdrawDelegatorRewards,
   getDelegation,
 } from "../tools/staking";
+
 import { getTokenAddressByDenom } from "../utils/tokens";
 import { IDelegationInfoJSON, InjectiveValidatorAddress } from "../types";
 import { getInjectiveAddress } from "@injectivelabs/sdk-ts";
@@ -28,16 +30,19 @@ export class InjectiveAgentKit {
   public mainnetWalletClient: ViemWalletClient;
   public testnetPublicClient: ViemPublicClient;
   public testnetWalletClient: ViemWalletClient;
+  public privateKey: string;
   public walletAddress: Address;
   public injWalletAddress: string;
+  public feeRecipient: string;
   public token: string | undefined;
 
   /**
    * Creates a new InjectiveAgentKit instance
    * @param privateKey The private key for the wallet
    * @param provider The model provider to use
+   * @param feeRecipient The address to receive the trading fee rebate. Agent's developer can use this address to receive Injective's trading fee rebates.
    */
-  constructor(privateKey: string, provider: any) {
+  constructor(privateKey: string, provider: any, feeRecipient?: string) {
     const account = privateKeyToAccount(privateKey as Address);
     this.mainnetPublicClient = createPublicClient({
       chain: injective,
@@ -59,8 +64,10 @@ export class InjectiveAgentKit {
       transport: http(),
     });
 
+    this.privateKey = privateKey;
     this.walletAddress = account.address;
     this.injWalletAddress = getInjectiveAddress(account.address);
+    this.feeRecipient = feeRecipient ? feeRecipient : this.injWalletAddress;
 
     this.token = getApiKeyForProvider(provider);
   }
@@ -225,5 +232,46 @@ export class InjectiveAgentKit {
     delegatorAddress?: Address,
   ): Promise<IDelegationInfoJSON> {
     return getDelegation(this, network, validatorAddress, delegatorAddress);
+  }
+
+  /**
+   * Creates a derivative market order on Injective exchange
+   * @param network The network to use (e.g., "TESTNET" or "MAINNET")
+   * @param ticker The ticker symbol of the derivative market (e.g., "BTC/USDT")
+   * @param orderType The type of order to create (e.g., "BUY", "SELL")
+   * @param quantity The quantity of the asset to buy/sell (e.g., "0.1" for 0.1 BTC)
+   * @param leverage The leverage to use for the order (e.g., "5" for 5x leverage)
+   * @param slippage The slippage tolerance for the order as a percentage (e.g., "1" for 1% slippage)
+   * @param marketId The unique identifier of the derivative market
+   * @param subaccountIndex The index of the subaccount to use for the order
+   * @param margin The margin to use for the order (e.g., "100" for $100 margin)
+   * @param triggerPrice The price at which the order should be triggered (e.g., "30000" for $30,000)
+   * @returns Promise with the transaction result
+   */
+  async createDerivativeMarketOrder(
+    network: string,
+    ticker: string,
+    orderType: number,
+    quantity: string,
+    leverage: string,
+    slippage: string,
+    marketId?: string,
+    subaccountIndex?: string,
+    margin?: string,
+    triggerPrice?: string,
+  ): Promise<string> {
+    return createDerivativeMarketOrder(
+      this,
+      network,
+      ticker,
+      orderType,
+      quantity,
+      leverage,
+      slippage,
+      marketId,
+      subaccountIndex,
+      margin,
+      triggerPrice,
+    );
   }
 }

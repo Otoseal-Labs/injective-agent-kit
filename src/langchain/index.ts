@@ -1,6 +1,7 @@
 export * from "./erc20";
 export * from "./winj9";
 export * from "./staking";
+export * from "./derivative";
 
 import type { InjectiveAgentKit } from "../agent";
 import {
@@ -13,6 +14,7 @@ import {
   UndelegateINJTool,
   WithdrawDelegatorRewardsTool,
   GetDelegationINJTool,
+  CreateDerivativeMarketOrderTool,
 } from "./index";
 
 export function createInjectiveTools(injectiveKit: InjectiveAgentKit) {
@@ -26,5 +28,6 @@ export function createInjectiveTools(injectiveKit: InjectiveAgentKit) {
     new UndelegateINJTool(injectiveKit),
     new WithdrawDelegatorRewardsTool(injectiveKit),
     new GetDelegationINJTool(injectiveKit),
+    new CreateDerivativeMarketOrderTool(injectiveKit),
   ];
 }
