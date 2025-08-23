@@ -146,7 +146,6 @@ export async function createDerivativeMarketOrder(
       marketId: derivativeMarket.marketId,
       feeRecipient: agent.feeRecipient,
       subaccountId: subaccountIdToUse,
-      cid: `injective-agent-kit-${Date.now()}`,
     });
     console.log(msg);
 

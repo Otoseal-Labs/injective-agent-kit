@@ -43,7 +43,8 @@ export class CreateDerivativeMarketOrderTool extends StructuredTool<
   - slippage: The slippage tolerance for the order as a percentage. (e.g., "1" for 1% slippage) (required). Default is "0.5" if slippage param is not provided.
   - quantity: The quantity of the asset to buy/sell, cannot be 0 (e.g., "0.1" for 0.1 BTC) (required).
   - leverage: The leverage to use for the order, cannot be 0 (e.g., "5" for 5x leverage) (required). Default is "1" if not provided.
-  - margin: Optional. The margin to use for the order (e.g., "100" for $100 margin). Margin MUST be "0" if user's intention is "take profit" or "stop loss" (TP/SL) for existing positions.
+  - margin: Optional. The margin to use for the order (e.g., "100" for $100 margin). 
+    Margin param is REQUIRED and MUST be "0" if user's intention is "take profit" or "stop loss" (TP/SL) or "close position" for existing positions.
   - trigger_price: Optional. The price at which the order should be triggered (e.g., "30000" for $30,000) (required for stop-limit orders).
 `;
   schema = CreateDerivativeMarketOrderInputSchema;
