@@ -2,7 +2,6 @@ import { InjectiveAgentKit } from "../../agent";
 import {
   broadcastTxWithPk,
   getDerivativeMarketByMarketId,
-  getWorstPriceForDerivativeMarket,
   normalizeTickSize,
   getDerivativeMarketFromTicker,
 } from "../../utils";
@@ -13,47 +12,45 @@ import {
   getDefaultSubaccountId,
   getSubaccountId,
   getDerivativeMarketTensMultiplier,
-  MsgCreateDerivativeMarketOrder,
+  MsgCreateDerivativeLimitOrder,
   PerpetualMarket,
 } from "@injectivelabs/sdk-ts";
 
 /**
- * Create a derivative market order on Injective exchange
+ * Create a derivative limit order at a specified limit price on Injective exchange
  * @param agent InjectiveAgentKit instance
  * @param network The network to use (e.g., "TESTNET" or "MAINNET")
  * @param ticker The ticker symbol of the derivative market (e.g., "BTC/USDT")
  * @param orderType The type of order to create (e.g., "BUY", "SELL")
  * @param quantity The quantity of the asset to buy/sell (e.g., "0.1" for 0.1 BTC)
  * @param leverage The leverage to use for the order (e.g., "5" for 5x leverage)
- * @param slippage The slippage tolerance for the order as a percentage (e.g., "1" for 1% slippage)
+ * @param price The limit price at which the order should be executed (e.g., "30000" for $30,000)
  * @param marketId The unique identifier of the derivative market
  * @param subaccountIndex The index of the subaccount to use for the order
  * @param margin The margin to use for the order (e.g., "100" for $100 margin)
  * @param triggerPrice The price at which the order should be triggered (e.g., "30000" for $30,000)
  * @returns Promise with the transaction result
  */
-export async function createDerivativeMarketOrder(
+export async function createDerivativeLimitOrder(
   agent: InjectiveAgentKit,
   network: string,
   ticker: string,
   orderType: number,
   quantity: string,
   leverage: string,
-  slippage: string,
+  price: string,
   marketId?: string,
   subaccountIndex?: string,
   margin?: string,
   triggerPrice?: string,
 ): Promise<string> {
   console.log(
-    `Creating derivative market order for ${quantity} ${ticker} on ${network}...`,
+    `Creating derivative limit order for ${quantity} ${ticker} at ${price} on ${network}...`,
   );
 
   const userInjWallet = agent.injWalletAddress;
 
   const isTestnet = network === "TESTNET";
-  const isBuy =
-    orderType === 1 || orderType === 3 || orderType === 5 || orderType === 7;
 
   const derivativeMarket = marketId
     ? await getDerivativeMarketByMarketId(isTestnet, marketId)
@@ -63,20 +60,7 @@ export async function createDerivativeMarketOrder(
     ? getSubaccountId(userInjWallet, Number(subaccountIndex))
     : getDefaultSubaccountId(userInjWallet);
 
-  const slippageToUse = Number(slippage) / 100;
-
   const quoteDecimals = derivativeMarket.quoteToken?.decimals || 6;
-
-  const priceToUse =
-    Number(
-      await getWorstPriceForDerivativeMarket(
-        isTestnet,
-        derivativeMarket,
-        isBuy,
-        slippageToUse,
-      ),
-    ) /
-    10 ** quoteDecimals;
 
   const initialMarginRatio = Number(
     (derivativeMarket as PerpetualMarket).initialMarginRatio,
@@ -111,7 +95,7 @@ export async function createDerivativeMarketOrder(
 
   const marginToUse = margin
     ? Number(margin) / 10 ** quoteDecimals
-    : (Number(priceToUse) * normalizedQuantity) / Number(leverage);
+    : (Number(price) * normalizedQuantity) / Number(leverage);
 
   const triggerPriceToUse = triggerPrice ? triggerPrice : "0";
 
@@ -122,7 +106,7 @@ export async function createDerivativeMarketOrder(
   });
 
   try {
-    const msg = MsgCreateDerivativeMarketOrder.fromJSON({
+    const msg = MsgCreateDerivativeLimitOrder.fromJSON({
       orderType,
       triggerPrice: derivativePriceToChainPriceToFixed({
         value: triggerPriceToUse,
@@ -131,7 +115,7 @@ export async function createDerivativeMarketOrder(
       }),
       injectiveAddress: userInjWallet,
       price: derivativePriceToChainPriceToFixed({
-        value: priceToUse,
+        value: price,
         tensMultiplier: tensMultiplier.priceTensMultiplier,
         quoteDecimals,
       }),
@@ -152,7 +136,7 @@ export async function createDerivativeMarketOrder(
     console.log("Broadcasting transaction...");
     const tx = await broadcastTxWithPk(isTestnet, agent.privateKey, msg);
 
-    return `Created derivative market order for ${quantity} ${ticker} on ${network}.\nTransaction hash: ${tx.txHash}`;
+    return `Created derivative limit order for ${quantity} ${ticker} at ${price} on ${network}.\nTransaction hash: ${tx.txHash}`;
   } catch (error) {
     const errorMsg = error instanceof Error ? error?.message : String(error);
     console.error(errorMsg);

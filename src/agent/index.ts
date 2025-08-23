@@ -14,6 +14,7 @@ import { getERC20Balance, ERC20Transfer } from "../tools/erc20";
 import { wrapINJ, unwrapWINJ } from "../tools/winj9";
 import {
   createDerivativeMarketOrder,
+  createDerivativeLimitOrder,
   fetchPositions,
 } from "../tools/derivative";
 import {
@@ -271,6 +272,47 @@ export class InjectiveAgentKit {
       quantity,
       leverage,
       slippage,
+      marketId,
+      subaccountIndex,
+      margin,
+      triggerPrice,
+    );
+  }
+
+  /**
+   * Creates a derivative limit order at a specified limit price on Injective exchange
+   * @param network The network to use (e.g., "TESTNET" or "MAINNET")
+   * @param ticker The ticker symbol of the derivative market (e.g., "BTC/USDT")
+   * @param orderType The type of order to create (e.g., "BUY", "SELL")
+   * @param quantity The quantity of the asset to buy/sell (e.g., "0.1" for 0.1 BTC)
+   * @param leverage The leverage to use for the order (e.g., "5" for 5x leverage)
+   * @param price The limit price at which the order should be executed (e.g., "30000" for $30,000)
+   * @param marketId The unique identifier of the derivative market
+   * @param subaccountIndex The index of the subaccount to use for the order
+   * @param margin The margin to use for the order (e.g., "100" for $100 margin)
+   * @param triggerPrice The price at which the order should be triggered (e.g., "30000" for $30,000)
+   * @returns Promise with the transaction result
+   */
+  async createDerivativeLimitOrder(
+    network: string,
+    ticker: string,
+    orderType: number,
+    quantity: string,
+    leverage: string,
+    price: string,
+    marketId?: string,
+    subaccountIndex?: string,
+    margin?: string,
+    triggerPrice?: string,
+  ): Promise<string> {
+    return createDerivativeLimitOrder(
+      this,
+      network,
+      ticker,
+      orderType,
+      quantity,
+      leverage,
+      price,
       marketId,
       subaccountIndex,
       margin,

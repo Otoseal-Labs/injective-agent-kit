@@ -122,9 +122,9 @@ export async function fetchPositions(
   return indexerGrpcDerivativesApi.fetchPositions(params);
 }
 
-export function normalizeQuantity(
+export function normalizeTickSize(
   quantity: number,
-  minQuantityTickSize: number,
+  minTickSize: number,
 ): number {
-  return Math.floor(quantity / minQuantityTickSize) * minQuantityTickSize;
+  return Math.floor(quantity / minTickSize) * minTickSize;
 }

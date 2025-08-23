@@ -15,6 +15,7 @@ import {
   WithdrawDelegatorRewardsTool,
   GetDelegationINJTool,
   CreateDerivativeMarketOrderTool,
+  CreateDerivativeLimitOrderTool,
   FetchPositionsTool,
 } from "./index";
 
@@ -30,6 +31,7 @@ export function createInjectiveTools(injectiveKit: InjectiveAgentKit) {
     new WithdrawDelegatorRewardsTool(injectiveKit),
     new GetDelegationINJTool(injectiveKit),
     new CreateDerivativeMarketOrderTool(injectiveKit),
+    new CreateDerivativeLimitOrderTool(injectiveKit),
     new FetchPositionsTool(injectiveKit),
   ];
 }

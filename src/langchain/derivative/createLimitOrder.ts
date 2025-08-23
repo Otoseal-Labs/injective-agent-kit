@@ -2,7 +2,7 @@ import { StructuredTool } from "@langchain/core/tools";
 import { InjectiveAgentKit } from "../../agent";
 import { z } from "zod";
 
-const CreateDerivativeMarketOrderInputSchema = z.object({
+const CreateDerivativeLimitOrderInputSchema = z.object({
   network: z.string().default("MAINNET"),
   ticker: z.string().min(1, "Ticker must not be empty"),
   market_id: z.string().optional(),
@@ -11,20 +11,20 @@ const CreateDerivativeMarketOrderInputSchema = z.object({
     .number()
     .int()
     .min(1, "Order type must be a valid Injective order type")
-    .max(6, "Order type must be a valid Injective order type"),
-  slippage: z.string().default("0.5"),
+    .max(8, "Order type must be a valid Injective order type"),
+  price: z.string().min(1, "Price must not be empty"),
   quantity: z.string().min(1, "Quantity must not be empty"),
   leverage: z.string().default("1"),
   margin: z.string().optional(),
   trigger_price: z.string().optional(),
 });
 
-export class CreateDerivativeMarketOrderTool extends StructuredTool<
-  typeof CreateDerivativeMarketOrderInputSchema
+export class CreateDerivativeLimitOrderTool extends StructuredTool<
+  typeof CreateDerivativeLimitOrderInputSchema
 > {
-  name = "injective_create_derivative_market_order";
-  description = `Create a derivative market order on Injective exchange.
-  IMPORTANT: If the user provides a limit price, do not use this tool, use injective_create_derivative_limit_order instead.
+  name = "injective_create_derivative_limit_order";
+  description = `Create a derivative limit order at a specified limit price on Injective exchange.
+  IMPORTANT: If the user doesn't provide a limit price, do not use this tool, use injective_create_derivative_market_order instead.
 
   Parameters:
   - network: The network to use (e.g., "TESTNET" or "MAINNET") (required). Default is "MAINNET" if network param is not provided.
@@ -38,31 +38,33 @@ export class CreateDerivativeMarketOrderTool extends StructuredTool<
     4 (STOP_SELL) → Sell if price drops to trigger_price (e.g. "Stop loss BTC at 65k").
     5 (TAKE_BUY) → Buy if price falls to trigger_price (e.g. "Buy BTC on dip to 60k").
     6 (TAKE_SELL) → Sell if price rises to trigger_price (e.g. "Take profit long BTC at 120k").
+    7 (BUY_PO) → Post-only buy (e.g. "Place post-only buy at 59,500").
+    8 (SELL_PO) → Post-only sell (e.g. "Place post-only sell at 62,000").
 
-  - slippage: The slippage tolerance for the order as a percentage. (e.g., "1" for 1% slippage) (required). Default is "0.5" if slippage param is not provided.
+  - price: The limit price at which the order should be executed (e.g., "30000" for $30,000) (required).
   - quantity: The quantity of the asset to buy/sell, cannot be 0 (e.g., "0.1" for 0.1 BTC) (required).
   - leverage: The leverage to use for the order, cannot be 0 (e.g., "5" for 5x leverage) (required). Default is "1" if not provided.
   - margin: Optional. The margin to use for the order (e.g., "100" for $100 margin). 
     Margin param is REQUIRED and MUST be "0" if user's intention is "take profit" or "stop loss" (TP/SL) or "close position" for existing positions.
   - trigger_price: Optional. The price at which the order should be triggered (e.g., "30000" for $30,000) (required for stop-limit orders).
 `;
-  schema = CreateDerivativeMarketOrderInputSchema;
+  schema = CreateDerivativeLimitOrderInputSchema;
 
   constructor(private readonly injectiveKit: InjectiveAgentKit) {
     super();
   }
 
   protected async _call(
-    input: z.infer<typeof CreateDerivativeMarketOrderInputSchema>,
+    input: z.infer<typeof CreateDerivativeLimitOrderInputSchema>,
   ): Promise<string> {
     try {
-      const order = await this.injectiveKit.createDerivativeMarketOrder(
+      const order = await this.injectiveKit.createDerivativeLimitOrder(
         input.network,
         input.ticker,
         input.order_type,
         input.quantity,
         input.leverage,
-        input.slippage,
+        input.price,
         input.market_id,
         input.subaccount_index,
         input.margin,
