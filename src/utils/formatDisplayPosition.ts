@@ -1,5 +1,4 @@
 import { Position } from "@injectivelabs/sdk-ts";
-import { formatWei } from "./formatToken";
 
 function formatNumber(value: string, decimals = 6): string {
   const num = parseFloat(value);

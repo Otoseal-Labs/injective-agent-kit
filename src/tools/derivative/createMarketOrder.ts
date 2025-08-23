@@ -124,7 +124,11 @@ export async function createDerivativeMarketOrder(
   try {
     const msg = MsgCreateDerivativeMarketOrder.fromJSON({
       orderType,
-      triggerPrice: triggerPriceToUse,
+      triggerPrice: derivativePriceToChainPriceToFixed({
+        value: triggerPriceToUse,
+        tensMultiplier: tensMultiplier.priceTensMultiplier,
+        quoteDecimals,
+      }),
       injectiveAddress: userInjWallet,
       price: derivativePriceToChainPriceToFixed({
         value: priceToUse,
@@ -142,7 +146,7 @@ export async function createDerivativeMarketOrder(
       marketId: derivativeMarket.marketId,
       feeRecipient: agent.feeRecipient,
       subaccountId: subaccountIdToUse,
-      cid: "injective-agent-kit",
+      cid: `injective-agent-kit-${Date.now()}`,
     });
     console.log(msg);
 
