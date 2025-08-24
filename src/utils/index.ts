@@ -6,3 +6,4 @@ export * from "./getDelegation";
 export * from "./tokens";
 export * from "./injectiveBroadcaster";
 export * from "./injectiveDerivativeMarkets";
+export * from "./helixswap";

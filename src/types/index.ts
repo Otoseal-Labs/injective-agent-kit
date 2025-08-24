@@ -10,6 +10,27 @@ export interface IToken {
   };
 }
 
+export interface ISwapToken {
+  address: string;
+  isNative?: boolean;
+  tokenVerification: string;
+  decimals: number;
+  name: string;
+  symbol: string;
+  logo: string;
+  coinGeckoId: string;
+  baseDenom?: string;
+  channelId?: string;
+  source?: string;
+  path?: string;
+  hash?: string;
+  creator?: string;
+  cryptoRankId?: number;
+  denom: string;
+  tokenType: string;
+  externalLogo: string;
+}
+
 export interface ICosmosCoin {
   amount: bigint;
   denom: string;

@@ -1,5 +1,9 @@
-import { TOKENS } from "../commons";
-import { IToken } from "../types";
+import {
+  TOKENS,
+  HELIX_TRADING_TOKENS_TESTNET,
+  HELIX_TRADING_TOKENS_MAINNET,
+} from "../commons";
+import { ISwapToken, IToken } from "../types";
 
 export function getTokenDenomByAddress(address: `0x${string}`): string {
   return TOKENS[address]?.attributes.symbol;
@@ -32,4 +36,20 @@ export function getTokenInfoByDenom(denom: string): IToken | undefined {
     return;
   }
   return TOKENS[keys[0] as `0x${string}`];
+}
+
+export function getSwapTokenInfoBySymbol(
+  isTestnet: boolean,
+  symbol: string,
+): ISwapToken | undefined {
+  const TOKEN_LIST = isTestnet
+    ? HELIX_TRADING_TOKENS_TESTNET
+    : HELIX_TRADING_TOKENS_MAINNET;
+  const keys = Object.keys(TOKEN_LIST).filter(
+    (v) => TOKEN_LIST[v].symbol.toUpperCase() === symbol.toUpperCase(),
+  );
+  if (keys.length === 0) {
+    return;
+  }
+  return TOKEN_LIST[keys[0]];
 }

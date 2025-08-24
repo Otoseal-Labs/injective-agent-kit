@@ -24,6 +24,7 @@ import {
   withdrawDelegatorRewards,
   getDelegation,
 } from "../tools/staking";
+import { helixSwapMinOutput } from "../tools/helixswap";
 
 import { getTokenAddressByDenom } from "../utils/tokens";
 import { IDelegationInfoJSON, InjectiveValidatorAddress } from "../types";
@@ -335,5 +336,31 @@ export class InjectiveAgentKit {
     direction?: "buy" | "sell" | "long" | "short",
   ): Promise<any> {
     return fetchPositions(this, network, tickers, subaccountIndex, direction);
+  }
+
+  /**
+   * Swap an amount of input token to output token using swapMinOutput method of the Helix swap router contract
+   * @param network The network to use (e.g., "TESTNET" or "MAINNET")
+   * @param inputToken The input token want to swap (e.g., "INJ", "USDT")
+   * @param outputToken The output token want to swap (e.g., "INJ", "USDT")
+   * @param inputAmount The amount of input token to swap (e.g., "10")
+   * @param slippage The slippage tolerance for the swap (e.g., "1" for 1% slippage)
+   * @returns Promise with the transaction result
+   */
+  async helixSwapMinOutput(
+    network: string,
+    inputToken: string,
+    outputToken: string,
+    inputAmount: string,
+    slippage?: string,
+  ): Promise<string> {
+    return helixSwapMinOutput(
+      this,
+      network,
+      inputToken,
+      outputToken,
+      inputAmount,
+      slippage,
+    );
   }
 }

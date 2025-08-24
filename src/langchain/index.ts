@@ -2,6 +2,7 @@ export * from "./erc20";
 export * from "./winj9";
 export * from "./staking";
 export * from "./derivative";
+export * from "./helixswap";
 
 import type { InjectiveAgentKit } from "../agent";
 import {
@@ -17,6 +18,7 @@ import {
   CreateDerivativeMarketOrderTool,
   CreateDerivativeLimitOrderTool,
   FetchPositionsTool,
+  HelixSwapMinOutputTool,
 } from "./index";
 
 export function createInjectiveTools(injectiveKit: InjectiveAgentKit) {
@@ -33,5 +35,6 @@ export function createInjectiveTools(injectiveKit: InjectiveAgentKit) {
     new CreateDerivativeMarketOrderTool(injectiveKit),
     new CreateDerivativeLimitOrderTool(injectiveKit),
     new FetchPositionsTool(injectiveKit),
+    new HelixSwapMinOutputTool(injectiveKit),
   ];
 }
