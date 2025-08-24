@@ -11,9 +11,9 @@ This toolkit bridges AI and blockchain interaction, empowering autonomous agents
 
 ---
 
-## ✨ Features (v0.1.0)
+## ✨ Features (v0.2.1)
 
-Current capabilities in version **0.1.0** include:  
+Current capabilities in version **0.2.1** include:  
 
 - **ERC-20 Token Tools**  
   - Check balances  
@@ -27,6 +27,10 @@ Current capabilities in version **0.1.0** include:
 - **WINJ9 Tools**  
   - Wrap INJ → WINJ  
   - Unwrap WINJ → INJ  
+
+- **Injective Exchange Tools**  
+  - Trade on Injective perpetual exchanges  
+  - Swap any token supported by Helix swap  
 
 - **LangChain Support**  
   - Ready-to-use as LangChain tools  
